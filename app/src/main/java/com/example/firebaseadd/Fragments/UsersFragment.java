@@ -46,7 +46,7 @@ public class UsersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mUsers=new ArrayList<>();
-
+        userAdapter =new UserAdapter(getContext(),mUsers);
         ReadUsers();
         return view;
     }
@@ -68,8 +68,6 @@ public class UsersFragment extends Fragment {
                     if(!user.getId().equals(firebaseUser.getUid())){
                         mUsers.add(user);
                     }
-
-                    userAdapter =new UserAdapter(getContext(),mUsers);
                     recyclerView.setAdapter(userAdapter);
                 }
 

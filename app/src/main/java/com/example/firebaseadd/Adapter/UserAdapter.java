@@ -35,33 +35,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item, parent,false));
+        return new UserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item, parent, false));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final User user =mUsers.get(position);
+        final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
 
-        if (user.getImageUrl()==null){
+        if (user.getImageUrl() == null) {
             holder.imageView.setImageResource(R.mipmap.ic_launcher);
-        }else{
+        } else {
             Glide.with(context)
                     .load(user.getImageUrl())
                     .into(holder.imageView);
         }
 
 
-     holder.imageView.setOnClickListener(new View.OnClickListener(){
-         @Override
-         public void onClick(View view){
-             Intent i= new Intent(context, MessageActivity.class);
-             i.putExtra("useriq", user.getId());
-             context.startActivity(i);
-         }
-     });
-
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, MessageActivity.class);
+                i.putExtra("useriq", user.getId());
+                context.startActivity(i);
+            }
+        });
 
 
     }
@@ -71,15 +70,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return mUsers.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView username;
         public ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            username=itemView.findViewById(R.id.user_card);
-            imageView=itemView.findViewById(R.id.user_image);
+            username = itemView.findViewById(R.id.user_card);
+            imageView = itemView.findViewById(R.id.user_image);
         }
     }
 

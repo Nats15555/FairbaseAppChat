@@ -41,6 +41,7 @@ public class MessageActivity extends AppCompatActivity {
     TextView username;
     ImageView imageView;
 
+    RecyclerView recyclerView;
     EditText msg_editTest;
     Button send;
 
@@ -49,9 +50,12 @@ public class MessageActivity extends AppCompatActivity {
     Intent intent;
 
     MessageAdapter messageAdapter;
-    List<Chat> mchat;
+    List<Chat> mchat=new ArrayList<>();
+    String userid;
 
-    RecyclerView recyclerView;
+    Button addFriend;
+    Button ignore;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -65,12 +69,15 @@ public class MessageActivity extends AppCompatActivity {
 
         send = findViewById(R.id.btn_send);
         msg_editTest = findViewById(R.id.test_send);
+        addFriend=findViewById(R.id.add_friend);
+        ignore=findViewById(R.id.ignore);
 
         recyclerView=findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
-       recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        messageAdapter=new MessageAdapter(MessageActivity.this,mchat,null);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
@@ -82,7 +89,7 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         intent = getIntent();
-        String userid = intent.getStringExtra("useriq");
+        userid = intent.getStringExtra("useriq");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("MyUsers").child(userid);
@@ -124,6 +131,20 @@ public class MessageActivity extends AppCompatActivity {
                 msg_editTest.setText("");
             }
         });
+//доделать добавление в друзья
+        addFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+//доделать добавление в игнор
+        ignore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void sendMassage(String sender, String receiver, String massage) {
@@ -136,17 +157,33 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(map);
 
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("ChatList")
+                .child(fuser.getUid()).child(userid);
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()){
+                    chatRef.child("id").setValue(""+userid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
     private void readMessages(String myid,String userid,String imageurl){
-
-        mchat=new ArrayList<>();
 
         reference= FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mchat.clear();
+                //mapсtrukt
                 for (DataSnapshot it: snapshot.getChildren()){
                     Chat chat=it.getValue(Chat.class);
                     Iterable<DataSnapshot> myUser = it.getChildren();
@@ -161,9 +198,9 @@ public class MessageActivity extends AppCompatActivity {
                         chat.setMessage(message);
                         mchat.add(chat);
                     }
-                    messageAdapter=new MessageAdapter(MessageActivity.this,mchat,imageurl);
-                    recyclerView.setAdapter(messageAdapter);//
                 }
+                recyclerView.setAdapter(messageAdapter);//
+                messageAdapter.notifyDataSetChanged();
             }
 
             @Override
