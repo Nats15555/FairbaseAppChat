@@ -18,9 +18,11 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.example.firebaseadd.Adapter.FriendsAdapter;
 import com.example.firebaseadd.Adapter.MessageAdapter;
 import com.example.firebaseadd.Model.Chat;
 import com.example.firebaseadd.Model.User;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,12 +52,10 @@ public class MessageActivity extends AppCompatActivity {
     Intent intent;
 
     MessageAdapter messageAdapter;
-    List<Chat> mchat=new ArrayList<>();
+    private List<Chat> mchat = new ArrayList<>();
     String userid;
-
     Button addFriend;
     Button ignore;
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -69,16 +69,16 @@ public class MessageActivity extends AppCompatActivity {
 
         send = findViewById(R.id.btn_send);
         msg_editTest = findViewById(R.id.test_send);
-        addFriend=findViewById(R.id.add_friend);
-        ignore=findViewById(R.id.ignore);
 
-        recyclerView=findViewById(R.id.recycler_view);
+
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        messageAdapter=new MessageAdapter(MessageActivity.this,mchat,null);
-
+        addFriend=findViewById(R.id.add_friend);
+        ignore=findViewById(R.id.ignore);
+        messageAdapter = new MessageAdapter(MessageActivity.this, mchat, null);
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -109,7 +109,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
 
 
-                readMessages(fuser.getUid(),userid,user.getImageUrl());
+                readMessages(fuser.getUid(), userid, user.getImageUrl());
             }
 
             @Override
@@ -135,7 +135,7 @@ public class MessageActivity extends AppCompatActivity {
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                addFriend();
             }
         });
 //доделать добавление в игнор
@@ -162,8 +162,8 @@ public class MessageActivity extends AppCompatActivity {
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()){
-                    chatRef.child("id").setValue(""+userid);
+                if (!snapshot.exists()) {
+                    chatRef.child("id").setValue("" + userid);
                 }
             }
 
@@ -176,21 +176,20 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    private void readMessages(String myid,String userid,String imageurl){
+    private void readMessages(String myid, String userid, String imageurl) {
 
-        reference= FirebaseDatabase.getInstance().getReference("Chats");
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mchat.clear();
-                //mapсtrukt
-                for (DataSnapshot it: snapshot.getChildren()){
-                    Chat chat=it.getValue(Chat.class);
+                for (DataSnapshot it : snapshot.getChildren()) {
+                    Chat chat = it.getValue(Chat.class);
                     Iterable<DataSnapshot> myUser = it.getChildren();
-                    if(chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                    chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                    if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
+                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
                         String message = "";
-                        for (DataSnapshot inChat: myUser){
+                        for (DataSnapshot inChat : myUser) {
                             message = inChat.toString().split("=")[2].replaceFirst(".$", "")
                                     .replaceFirst(".$", "");
                             break;
@@ -208,8 +207,12 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-
-
+    private void addFriend(){
+        Map<String, Object> map = new HashMap<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        map.put(fuser.getUid(), userid);
+        reference.child("Friends").push().setValue(map);
     }
 }

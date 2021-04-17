@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.firebaseadd.Adapter.UserAdapter;
 import com.example.firebaseadd.Model.User;
@@ -29,23 +30,25 @@ import java.util.List;
 public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private List<User> mUsers=new ArrayList<>();
     private UserAdapter userAdapter;
-    private List<User> mUsers;
-
-    public UsersFragment() {
-        // Required empty public constructor
-    }
+    Button dell_btm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view= inflater.inflate(R.layout.fragment_users,container,false);
+
+        //dell_btm=view.findViewById(R.id.dell);
+        //dell_btm.setVisibility(view.INVISIBLE);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mUsers=new ArrayList<>();
+
+
         userAdapter =new UserAdapter(getContext(),mUsers);
         ReadUsers();
         return view;
