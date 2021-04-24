@@ -56,11 +56,11 @@ public class MyFriendsFragment extends Fragment {
 
         friendsAdapter = new FriendsAdapter(getContext(), new ArrayList<>(mUsersFrend));
         ReadUsers();
-        ReadFriend();
+        //ReadFriend();
         return view;
     }
 
-    private void ReadFriend() {
+   /* private void ReadFriend() {(работает неадекватно, не могу понять почему )
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends");
@@ -89,7 +89,7 @@ public class MyFriendsFragment extends Fragment {
             }
         });
 
-    }
+    }*/
 
     private void ReadUsers() {
 

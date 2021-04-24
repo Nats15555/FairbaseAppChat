@@ -55,11 +55,11 @@ public class BlacklistFragment extends Fragment {
 
         ignoreAdapter = new IgnorAdapter(getContext(), new ArrayList<>(mUsersIgnore));
         ReadUsers();
-        ReadIgnore();
+       // ReadIgnore();
         return view;
     }
 
-    private void ReadIgnore() {
+   /* private void ReadIgnore() {(работает неадекватно, не могу понять почему )
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Ignore");
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -83,9 +83,7 @@ public class BlacklistFragment extends Fragment {
 
             }
         });
-
-
-    }
+    }*/
 
     private void ReadUsers() {
 

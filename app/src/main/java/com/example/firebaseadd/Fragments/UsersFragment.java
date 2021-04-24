@@ -102,7 +102,6 @@ public class UsersFragment extends Fragment {
         sortUser.clear();
         for(User it:mUsers){
             if(it.getUsername().contains(findU)){
-                System.out.println(it.getUsername());
                 sortUser.add(it);
             }
         }
