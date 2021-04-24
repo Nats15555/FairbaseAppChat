@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.firebaseadd.Adapter.AllUserAdapter;
 import com.example.firebaseadd.Adapter.UserAdapter;
@@ -32,8 +33,11 @@ public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<User> mUsers = new ArrayList<>();
+    private List<User> sortUser = new ArrayList<>();
     private AllUserAdapter userAdapter;
-    Button dell_btm;
+    private AllUserAdapter findUserAdapter;
+    private Button find;
+    private EditText findUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,12 +48,28 @@ public class UsersFragment extends Fragment {
         //dell_btm=view.findViewById(R.id.dell);
         //dell_btm.setVisibility(view.INVISIBLE);
 
+        find=view.findViewById(R.id.find);
+        findUser=view.findViewById(R.id.find_user);
+
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         userAdapter = new AllUserAdapter(getContext(), mUsers);
+        findUserAdapter = new AllUserAdapter(getContext(),sortUser);
         ReadUsers();
+        find.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String findU=findUser.getText().toString();
+                if(findU.equals("")){
+                    ReadUsers();
+                }else {
+                    FindUser(findU);
+                }
+            }
+        });
+
         return view;
     }
 
@@ -76,5 +96,16 @@ public class UsersFragment extends Fragment {
 
             }
         });
+    }
+
+    private void FindUser(String findU){
+        sortUser.clear();
+        for(User it:mUsers){
+            if(it.getUsername().contains(findU)){
+                System.out.println(it.getUsername());
+                sortUser.add(it);
+            }
+        }
+        recyclerView.setAdapter(findUserAdapter);
     }
 }
