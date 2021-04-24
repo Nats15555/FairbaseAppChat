@@ -34,42 +34,21 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseUser firebaseUser;
-    DatabaseReference myRef;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        myRef = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser
-                .getUid());
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-        TabLayout tabLayout =findViewById(R.id.tabLayout);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
         ViewPager viewPager = findViewById(R.id.view_pager);
 
-        ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        viewPagerAdapter.addFragment(new ChatsFragment(),"My Chats");
-        viewPagerAdapter.addFragment(new UsersFragment(),"All Users");
-        viewPagerAdapter.addFragment(new MyFriendsFragment(),"My Friends");
-        viewPagerAdapter.addFragment(new BlacklistFragment(),"Black list");
-        viewPagerAdapter.addFragment(new ProfileFragment(),"MyProfile");
+        viewPagerAdapter.addFragment(new ChatsFragment(), "My Chats");
+        viewPagerAdapter.addFragment(new UsersFragment(), "All Users");
+        viewPagerAdapter.addFragment(new MyFriendsFragment(), "My Friends");
+        viewPagerAdapter.addFragment(new BlacklistFragment(), "Black list");
+        viewPagerAdapter.addFragment(new ProfileFragment(), "MyProfile");
 
 
         viewPager.setAdapter(viewPagerAdapter);
@@ -79,31 +58,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
                 return true;
         }
         return false;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragments;
         private List<String> titles;
 
-        ViewPagerAdapter(FragmentManager fm){
+        ViewPagerAdapter(FragmentManager fm) {
             super(fm);
-            this.fragments=new ArrayList<>();
-            this.titles=new ArrayList<>();
+            this.fragments = new ArrayList<>();
+            this.titles = new ArrayList<>();
         }
 
         @NonNull
@@ -117,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             return fragments.size();
         }
 
-        public void addFragment(Fragment fragment,String title){
+        public void addFragment(Fragment fragment, String title) {
             fragments.add(fragment);
             titles.add(title);
         }
@@ -125,13 +104,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Nullable
         @Override
-        public CharSequence getPageTitle(int position){
+        public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
 
     }
-
-
-
 
 }

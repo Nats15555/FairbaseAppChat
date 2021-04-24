@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.firebaseadd.Adapter.AllUserAdapter;
 import com.example.firebaseadd.Adapter.UserAdapter;
 import com.example.firebaseadd.Model.User;
 import com.example.firebaseadd.R;
@@ -30,15 +31,15 @@ import java.util.List;
 public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<User> mUsers=new ArrayList<>();
-    private UserAdapter userAdapter;
+    private List<User> mUsers = new ArrayList<>();
+    private AllUserAdapter userAdapter;
     Button dell_btm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view= inflater.inflate(R.layout.fragment_users,container,false);
+        View view = inflater.inflate(R.layout.fragment_users, container, false);
 
         //dell_btm=view.findViewById(R.id.dell);
         //dell_btm.setVisibility(view.INVISIBLE);
@@ -47,15 +48,12 @@ public class UsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-
-
-        userAdapter =new UserAdapter(getContext(),mUsers);
+        userAdapter = new AllUserAdapter(getContext(), mUsers);
         ReadUsers();
         return view;
     }
 
-    private void ReadUsers(){
-
+    private void ReadUsers() {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("MyUsers");
 
@@ -63,18 +61,14 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
-
-                for(DataSnapshot it: snapshot.getChildren()){
+                for (DataSnapshot it : snapshot.getChildren()) {
                     User user = it.getValue(User.class);
-
-                    assert user !=null;
-                    if(!user.getId().equals(firebaseUser.getUid())){
+                    assert user != null;
+                    if (!user.getId().equals(firebaseUser.getUid())) {
                         mUsers.add(user);
                     }
                     recyclerView.setAdapter(userAdapter);
                 }
-
-
             }
 
             @Override
@@ -82,6 +76,5 @@ public class UsersFragment extends Fragment {
 
             }
         });
-
     }
 }

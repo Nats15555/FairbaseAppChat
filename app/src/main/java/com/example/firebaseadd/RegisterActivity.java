@@ -25,8 +25,8 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText userET,passET,emailET;
-    Button registerBtn,inLogin;
+    EditText userET, passET, emailET;
+    Button registerBtn, inLogin;
 
     FirebaseAuth auth;
     DatabaseReference reference;
@@ -36,57 +36,53 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
-        userET=findViewById(R.id.userEditText);
-        passET=findViewById(R.id.passEditText);
-        emailET=findViewById(R.id.emailEditText);
-        registerBtn=findViewById(R.id.buttonRegister);
-        inLogin=findViewById(R.id.inLogin);
+        userET = findViewById(R.id.userEditText);
+        passET = findViewById(R.id.passEditText);
+        emailET = findViewById(R.id.emailEditText);
+        registerBtn = findViewById(R.id.buttonRegister);
+        inLogin = findViewById(R.id.inLogin);
         auth = FirebaseAuth.getInstance();
-
-
-
 
         inLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
 
-        registerBtn.setOnClickListener(new View.OnClickListener(){
+        registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                String txt_username=userET.getText().toString();
-                String txt_email=emailET.getText().toString();
-                String txt_password=passET.getText().toString();
+            public void onClick(View view) {
+                String txt_username = userET.getText().toString();
+                String txt_email = emailET.getText().toString();
+                String txt_password = passET.getText().toString();
 
-                if(TextUtils.isEmpty(txt_username) ||TextUtils.isEmpty(txt_username)||TextUtils.isEmpty(txt_username)){
+                if (TextUtils.isEmpty(txt_username) || TextUtils.isEmpty(txt_username) || TextUtils.isEmpty(txt_username)) {
                     Toast.makeText(RegisterActivity.this, "All fileds are required", Toast.LENGTH_SHORT).show();
-                }else if(txt_password.length()<6){
+                } else if (txt_password.length() < 6) {
                     Toast.makeText(RegisterActivity.this, "Password must be at the 6 characters", Toast.LENGTH_SHORT).show();
-                }else{
-                    register(txt_username,txt_email,txt_password);
+                } else {
+                    register(txt_username, txt_email, txt_password);
                 }
 
             }
         });
     }
 
-    private void register(String username,String email, String password){
+    private void register(String username, String email, String password) {
 
-        auth.createUserWithEmailAndPassword(email,password)
+        auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
-                            assert firebaseUser !=null;
-                            String userid=firebaseUser.getUid();
+                            assert firebaseUser != null;
+                            String userid = firebaseUser.getUid();
 
-                            reference= FirebaseDatabase.getInstance().getReference("MyUsers").child(userid);
+                            reference = FirebaseDatabase.getInstance().getReference("MyUsers").child(userid);
 
-                            Map<String,String> hashMap=new HashMap<>();
+                            Map<String, String> hashMap = new HashMap<>();
                             hashMap.put("id", userid);
                             hashMap.put("username", username);
                             hashMap.put("imageURL", "default");
@@ -94,16 +90,16 @@ public class RegisterActivity extends AppCompatActivity {
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Intent intent=new Intent(RegisterActivity.this, MainActivity.class);
+                                    if (task.isSuccessful()) {
+                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
                                     }
                                 }
                             });
-                        }else{
-                            Toast.makeText(RegisterActivity.this,"You can't register with this email or password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

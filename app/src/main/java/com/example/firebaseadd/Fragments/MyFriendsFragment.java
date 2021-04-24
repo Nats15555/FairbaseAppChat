@@ -35,8 +35,8 @@ import java.util.Set;
 public class MyFriendsFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<User> mUsers=new ArrayList<>();
-    private Set<User> mUsersFrend=new HashSet<>();
+    private List<User> mUsers = new ArrayList<>();
+    private Set<User> mUsersFrend = new HashSet<>();
     private FriendsAdapter friendsAdapter;
     Button dell_btm;
 
@@ -45,7 +45,7 @@ public class MyFriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view= inflater.inflate(R.layout.fragment_my_friends,container,false);
+        View view = inflater.inflate(R.layout.fragment_my_friends, container, false);
 
         //dell_btm=view.findViewById(R.id.dell);
         //dell_btm.setVisibility(view.INVISIBLE);
@@ -54,13 +54,13 @@ public class MyFriendsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        friendsAdapter =new FriendsAdapter(getContext(),new ArrayList<>(mUsersFrend));
+        friendsAdapter = new FriendsAdapter(getContext(), new ArrayList<>(mUsersFrend));
         ReadUsers();
         ReadFriend();
         return view;
     }
 
-    private void ReadFriend(){
+    private void ReadFriend() {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends");
@@ -69,11 +69,11 @@ public class MyFriendsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsersFrend.clear();
-                for(DataSnapshot it: snapshot.getChildren()){
-                    Map key =(Map) it.getValue();
-                    String value =(String) key.get(firebaseUser.getUid());
-                    for(User s: mUsers){
-                        if(value.equals(s.getId())){
+                for (DataSnapshot it : snapshot.getChildren()) {
+                    Map key = (Map) it.getValue();
+                    String value = (String) key.get(firebaseUser.getUid());
+                    for (User s : mUsers) {
+                        if (value.equals(s.getId())) {
                             mUsersFrend.add(s);
                         }
                     }

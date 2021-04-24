@@ -31,9 +31,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Chat> mChat;
     private String imgURL;
 
-
-    FirebaseUser fuser;
-
+    private FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
 
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
@@ -91,7 +89,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
         if (mChat.get(position).getSender().equals(fuser.getUid())) {
             return MSG_TYPE_RIGHT;
         } else {

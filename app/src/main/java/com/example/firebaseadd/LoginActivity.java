@@ -28,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        userFirebase=FirebaseAuth.getInstance().getCurrentUser();
+        userFirebase = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(userFirebase!=null){
+        if (userFirebase != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email_login);
         password = findViewById(R.id.pass_login);
         btn_login = findViewById(R.id.btn_login);
-        inRegister=findViewById(R.id.inRegister);
+        inRegister = findViewById(R.id.inRegister);
 
         inRegister.setOnClickListener(new View.OnClickListener() {
             @Override

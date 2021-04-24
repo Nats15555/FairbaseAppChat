@@ -76,8 +76,8 @@ public class MessageActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        addFriend=findViewById(R.id.add_friend);
-        ignore=findViewById(R.id.ignore);
+        addFriend = findViewById(R.id.add_friend);
+        ignore = findViewById(R.id.ignore);
         messageAdapter = new MessageAdapter(MessageActivity.this, mchat, null);
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
@@ -142,7 +142,7 @@ public class MessageActivity extends AppCompatActivity {
         ignore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                addIgnore();
             }
         });
     }
@@ -209,10 +209,17 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void addFriend(){
+    private void addFriend() {
         Map<String, Object> map = new HashMap<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         map.put(fuser.getUid(), userid);
         reference.child("Friends").push().setValue(map);
+    }
+
+    private void addIgnore() {
+        Map<String, Object> map = new HashMap<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        map.put(fuser.getUid(), userid);
+        reference.child("Ignore").push().setValue(map);
     }
 }
