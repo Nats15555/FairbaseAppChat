@@ -69,7 +69,7 @@ public class BlacklistFragment extends Fragment {
                     }
                     usersList.put(id, new IgnoreList(id, list));
                 }
-                friendsList();
+                ignoreList();
             }
 
             @Override
@@ -80,7 +80,7 @@ public class BlacklistFragment extends Fragment {
         return view;
     }
 
-    private void friendsList() {
+    private void ignoreList() {
         reference = FirebaseDatabase.getInstance().getReference("MyUsers");
         final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
         reference.addValueEventListener(new ValueEventListener() {
