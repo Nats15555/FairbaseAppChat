@@ -19,16 +19,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText email, password;
-    Button btn_login, inRegister;
-
-    FirebaseAuth auth;
-    FirebaseUser userFirebase;
-
     @Override
     protected void onStart() {
         super.onStart();
-        userFirebase = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
 
         if (userFirebase != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -42,13 +36,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
 
-        email = findViewById(R.id.email_login);
-        password = findViewById(R.id.pass_login);
-        btn_login = findViewById(R.id.btn_login);
-        inRegister = findViewById(R.id.inRegister);
+        EditText email = findViewById(R.id.email_login);
+        EditText password = findViewById(R.id.pass_login);
+        Button btn_login = findViewById(R.id.btn_login);
+        Button inRegister = findViewById(R.id.inRegister);
 
         inRegister.setOnClickListener(new View.OnClickListener() {
             @Override

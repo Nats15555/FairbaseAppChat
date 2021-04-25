@@ -37,12 +37,11 @@ public class ChatsFragment extends Fragment {
     private MassageUserAdapter userAdapter;
     private List<User> mUsers = new ArrayList<>();
 
-    FirebaseUser fuser;
     private DatabaseReference reference;
 
     private Map<String, Chatlist> usersList = new HashMap<>();
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +53,6 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         userAdapter = new MassageUserAdapter(getContext(), mUsers);
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         reference = FirebaseDatabase.getInstance().getReference("ChatList");
         reference.addValueEventListener(new ValueEventListener() {

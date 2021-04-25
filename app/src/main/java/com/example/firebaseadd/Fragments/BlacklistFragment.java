@@ -42,7 +42,7 @@ public class BlacklistFragment extends Fragment {
 
     private Map<String, IgnoreList> usersList = new HashMap<>();
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

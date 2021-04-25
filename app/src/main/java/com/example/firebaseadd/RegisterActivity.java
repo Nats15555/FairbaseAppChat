@@ -25,22 +25,19 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText userET, passET, emailET;
-    Button registerBtn, inLogin;
-
-    FirebaseAuth auth;
-    DatabaseReference reference;
+    private FirebaseAuth auth;
+    private DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        userET = findViewById(R.id.userEditText);
-        passET = findViewById(R.id.passEditText);
-        emailET = findViewById(R.id.emailEditText);
-        registerBtn = findViewById(R.id.buttonRegister);
-        inLogin = findViewById(R.id.inLogin);
+        EditText userET = findViewById(R.id.userEditText);
+        EditText passET = findViewById(R.id.passEditText);
+        EditText emailET = findViewById(R.id.emailEditText);
+        Button registerBtn = findViewById(R.id.buttonRegister);
+        Button inLogin = findViewById(R.id.inLogin);
         auth = FirebaseAuth.getInstance();
 
         inLogin.setOnClickListener(new View.OnClickListener() {

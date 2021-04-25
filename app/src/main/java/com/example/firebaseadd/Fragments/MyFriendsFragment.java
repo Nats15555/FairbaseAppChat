@@ -44,7 +44,7 @@ public class MyFriendsFragment extends Fragment {
 
     private Map<String, FriendsList> usersList = new HashMap<>();
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
