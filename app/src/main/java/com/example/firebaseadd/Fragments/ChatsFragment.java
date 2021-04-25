@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.firebaseadd.Adapter.MassageUserAdapter;
 import com.example.firebaseadd.Adapter.UserAdapter;
 import com.example.firebaseadd.Model.Chatlist;
 import com.example.firebaseadd.Model.User;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 public class ChatsFragment extends Fragment {
 
-    private UserAdapter userAdapter;
+    private MassageUserAdapter userAdapter;
     private List<User> mUsers = new ArrayList<>();
 
     FirebaseUser fuser;
@@ -52,7 +53,7 @@ public class ChatsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view2);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new UserAdapter(getContext(), mUsers);
+        userAdapter = new MassageUserAdapter(getContext(), mUsers);
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         reference = FirebaseDatabase.getInstance().getReference("ChatList");

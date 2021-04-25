@@ -3,7 +3,6 @@ package com.example.firebaseadd.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.firebaseadd.MessageActivity;
 import com.example.firebaseadd.Model.User;
 import com.example.firebaseadd.R;
@@ -25,12 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
+public class MassageUserAdapter extends RecyclerView.Adapter<MassageUserAdapter.ViewHolder> {
 
     private Context context;
     private List<User> mUsers;
 
-    public UserAdapter(Context context, List<User> mUsers) {
+    public MassageUserAdapter(Context context, List<User> mUsers) {
         this.context = context;
         this.mUsers = mUsers;
     }
@@ -39,7 +37,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item
+        return new MassageUserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item
                 , parent, false));
     }
 
@@ -63,14 +61,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.dell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              /*  mUsers.remove(position);
+                mUsers.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position,mUsers.size());
                 FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
                 FirebaseDatabase.getInstance().getReference("ChatList")
                         .child(fuser.getUid())
                         .child(user.getId())
-                        .removeValue();*/
+                        .removeValue();
             }
         });
     }
