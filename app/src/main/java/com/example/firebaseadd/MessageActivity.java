@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.firebaseadd.Adapter.FriendsAdapter;
 import com.example.firebaseadd.Adapter.MessageAdapter;
 import com.example.firebaseadd.Model.Chat;
+import com.example.firebaseadd.Model.IgnoreList;
 import com.example.firebaseadd.Model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,23 +40,19 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageActivity extends AppCompatActivity {
+    
+    private RecyclerView recyclerView;
 
-    TextView username;
-    ImageView imageView;
+    private FirebaseUser fuser;
+    private DatabaseReference reference;
+    private Intent intent;
 
-    RecyclerView recyclerView;
-    EditText msg_editTest;
-    Button send;
-
-    FirebaseUser fuser;
-    DatabaseReference reference;
-    Intent intent;
-
-    MessageAdapter messageAdapter;
+    private MessageAdapter messageAdapter;
     private List<Chat> mchat = new ArrayList<>();
-    String userid;
-    Button addFriend;
-    Button ignore;
+    private List<String> listIgn=new ArrayList<>();
+    private String userid;
+    private boolean chIgn=false;
+    private boolean chFri=false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -64,11 +61,11 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        imageView = findViewById(R.id.imageview_profile);
-        username = findViewById(R.id.username);
+        ImageView imageView = findViewById(R.id.imageview_profile);
+        TextView username = findViewById(R.id.username);
 
-        send = findViewById(R.id.btn_send);
-        msg_editTest = findViewById(R.id.test_send);
+        Button send = findViewById(R.id.btn_send);
+        EditText msg_editTest = findViewById(R.id.test_send);
 
 
         recyclerView = findViewById(R.id.recycler_view);
@@ -76,8 +73,8 @@ public class MessageActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        addFriend = findViewById(R.id.add_friend);
-        ignore = findViewById(R.id.ignore);
+        Button addFriend = findViewById(R.id.add_friend);
+        Button ignore = findViewById(R.id.ignore);
         messageAdapter = new MessageAdapter(MessageActivity.this, mchat, null);
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
@@ -107,8 +104,6 @@ public class MessageActivity extends AppCompatActivity {
                             .load(user.getImageUrl())
                             .into(imageView);
                 }
-
-
                 readMessages(fuser.getUid(), userid, user.getImageUrl());
             }
 
@@ -123,13 +118,36 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String msg = msg_editTest.getText().toString();
                 if (!msg.equals("")) {
-                    sendMassage(fuser.getUid(), userid, msg);
+                    DatabaseReference reference = FirebaseDatabase.getInstance()
+                            .getReference("Ignore")
+                            .child(fuser.getUid());
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            listIgn.clear();
+                            for (DataSnapshot it: snapshot.getChildren()){
+                                listIgn.add(it.getKey());
+                            }
+                            if(!listIgn.contains(userid)){
+                                sendMassage(fuser.getUid(), userid, msg);
+                            }else{
+                                Toast.makeText(MessageActivity.this
+                                        , "Вы добавили пользователя в черный список", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 } else {
                     Toast.makeText(MessageActivity.this
                             , "Please send a non empty msg", Toast.LENGTH_SHORT).show();
                 }
 
-                msg_editTest.setText("");
             }
         });
 //доделать добавление в друзья
@@ -149,6 +167,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void sendMassage(String sender, String receiver, String massage) {
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         Map<String, Object> map = new HashMap<>();
@@ -157,7 +176,6 @@ public class MessageActivity extends AppCompatActivity {
         map.put("massage", massage);
 
         reference.child("Chats").push().setValue(map);
-
         final DatabaseReference chatRef = FirebaseDatabase.getInstance()
                 .getReference("ChatList")
                 .child(fuser.getUid()).child(userid);
@@ -219,7 +237,10 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    reference.child("id").setValue("" + userid);
+                    if(!chFri) {
+                        reference.child("id").setValue("" + userid);
+                        chFri=true;
+                    }
                 }
             }
 
@@ -237,7 +258,10 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    reference.child("id").setValue("" + userid);
+                    if(!chIgn){
+                        reference.child("id").setValue("" + userid);
+                        chIgn=true;
+                    }
                 }
             }
 

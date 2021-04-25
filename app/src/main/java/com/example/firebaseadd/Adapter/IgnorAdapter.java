@@ -41,16 +41,6 @@ public class IgnorAdapter extends UserAdapter {
 
         holder.imageView.setImageResource(R.mipmap.ic_launcher);
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(context, MessageActivity.class);
-                i.putExtra("useriq", user.getId());
-                context.startActivity(i);
-            }
-        });
-
-
         holder.dell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
