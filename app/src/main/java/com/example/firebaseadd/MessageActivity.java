@@ -125,7 +125,8 @@ public class MessageActivity extends AppCompatActivity {
                 if (!msg.equals("")) {
                     sendMassage(fuser.getUid(), userid, msg);
                 } else {
-                    Toast.makeText(MessageActivity.this, "Please send a non empty msg", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MessageActivity.this
+                            , "Please send a non empty msg", Toast.LENGTH_SHORT).show();
                 }
 
                 msg_editTest.setText("");
@@ -157,7 +158,8 @@ public class MessageActivity extends AppCompatActivity {
 
         reference.child("Chats").push().setValue(map);
 
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("ChatList")
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance()
+                .getReference("ChatList")
                 .child(fuser.getUid()).child(userid);
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -190,7 +192,8 @@ public class MessageActivity extends AppCompatActivity {
                             chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
                         String message = "";
                         for (DataSnapshot inChat : myUser) {
-                            message = inChat.toString().split("=")[2].replaceFirst(".$", "")
+                            message = inChat.toString().split("=")[2]
+                                    .replaceFirst(".$", "")
                                     .replaceFirst(".$", "");
                             break;
                         }
@@ -210,16 +213,38 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void addFriend() {
-        Map<String, Object> map = new HashMap<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        map.put(fuser.getUid(), userid);
-        reference.child("Friends").push().setValue(map);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends")
+                .child(fuser.getUid()).child(userid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    reference.child("id").setValue("" + userid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void addIgnore() {
-        Map<String, Object> map = new HashMap<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        map.put(fuser.getUid(), userid);
-        reference.child("Ignore").push().setValue(map);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Ignore")
+                .child(fuser.getUid()).child(userid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    reference.child("id").setValue("" + userid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

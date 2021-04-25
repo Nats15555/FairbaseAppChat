@@ -37,7 +37,7 @@ public class ChatsFragment extends Fragment {
     private List<User> mUsers = new ArrayList<>();
 
     FirebaseUser fuser;
-    DatabaseReference reference;
+    private DatabaseReference reference;
 
     private Map<String, Chatlist> usersList = new HashMap<>();
 
