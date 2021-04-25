@@ -19,6 +19,9 @@ import com.bumptech.glide.Glide;
 import com.example.firebaseadd.MessageActivity;
 import com.example.firebaseadd.Model.User;
 import com.example.firebaseadd.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -46,6 +49,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
 
+        holder.imageView.setImageResource(R.mipmap.ic_launcher);
+
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,15 +60,19 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
 
-        holder.dell.setOnClickListener(new View.OnClickListener() {//пример удалене(удаляет, но потом востанавливается из-за наличия в бд)
+        holder.dell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mUsers.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position,mUsers.size());
+                FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase.getInstance().getReference("ChatList")
+                        .child(fuser.getUid())
+                        .child(user.getId())
+                        .removeValue();
             }
         });
-
     }
 
     @Override
