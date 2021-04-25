@@ -7,6 +7,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +36,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new UserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item, parent, false));
+        return new UserAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.user_item
+                , parent, false));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -43,15 +45,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final User user = mUsers.get(position);
         holder.username.setText(user.getUsername());
-
-        if (user.getImageUrl() == null) {
-            holder.imageView.setImageResource(R.mipmap.ic_launcher);
-        } else {
-            Glide.with(context)
-                    .load(user.getImageUrl())
-                    .into(holder.imageView);
-        }
-
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +55,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
 
+        holder.dell.setOnClickListener(new View.OnClickListener() {//пример удалене(удаляет, но потом востанавливается из-за наличия в бд)
+            @Override
+            public void onClick(View v) {
+                mUsers.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position,mUsers.size());
+            }
+        });
 
     }
 
@@ -73,12 +74,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView username;
         public ImageView imageView;
+        public Button dell;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.user_card);
             imageView = itemView.findViewById(R.id.user_image);
+            dell = itemView.findViewById(R.id.dell);
         }
     }
 
