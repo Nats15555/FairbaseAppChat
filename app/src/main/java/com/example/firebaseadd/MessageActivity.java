@@ -104,7 +104,30 @@ public class MessageActivity extends AppCompatActivity {
                             .load(user.getImageUrl())
                             .into(imageView);
                 }
-                readMessages(fuser.getUid(), userid, user.getImageUrl());
+                DatabaseReference reference = FirebaseDatabase.getInstance()
+                        .getReference("Ignore")
+                        .child(fuser.getUid());
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        listIgn.clear();
+                        for (DataSnapshot it: snapshot.getChildren()){
+                            listIgn.add(it.getKey());
+                        }
+                        if(!listIgn.contains(userid)){
+                            readMessages(fuser.getUid(), userid, user.getImageUrl());
+                        }else{
+                            Toast.makeText(MessageActivity.this
+                                    , "Вы добавили пользователя в черный список", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
             @Override
@@ -118,31 +141,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String msg = msg_editTest.getText().toString();
                 if (!msg.equals("")) {
-                    DatabaseReference reference = FirebaseDatabase.getInstance()
-                            .getReference("Ignore")
-                            .child(fuser.getUid());
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            listIgn.clear();
-                            for (DataSnapshot it: snapshot.getChildren()){
-                                listIgn.add(it.getKey());
-                            }
-                            if(!listIgn.contains(userid)){
-                                sendMassage(fuser.getUid(), userid, msg);
-                            }else{
-                                Toast.makeText(MessageActivity.this
-                                        , "Вы добавили пользователя в черный список", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
+                    sendMassage(fuser.getUid(), userid, msg);
                 } else {
                     Toast.makeText(MessageActivity.this
                             , "Please send a non empty msg", Toast.LENGTH_SHORT).show();
