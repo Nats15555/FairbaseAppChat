@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Fragments;
+package com.example.firebaseadd.fragments;
 
 import android.os.Bundle;
 
@@ -13,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.firebaseadd.Adapter.AllUserAdapter;
-import com.example.firebaseadd.Adapter.UserAdapter;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.adapter.AllUserAdapter;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,9 +43,6 @@ public class UsersFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
-
-        //dell_btm=view.findViewById(R.id.dell);
-        //dell_btm.setVisibility(view.INVISIBLE);
 
         find=view.findViewById(R.id.find);
         findUser=view.findViewById(R.id.find_user);

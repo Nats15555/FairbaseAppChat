@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Adapter;
+package com.example.firebaseadd.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firebaseadd.MessageActivity;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
 
 import java.util.List;

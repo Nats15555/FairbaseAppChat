@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Model;
+package com.example.firebaseadd.model;
 
 public class Chat {
 

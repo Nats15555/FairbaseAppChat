@@ -1,9 +1,7 @@
-package com.example.firebaseadd.Adapter;
+package com.example.firebaseadd.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.example.firebaseadd.MessageActivity;
-import com.example.firebaseadd.Model.Chat;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.model.Chat;
 import com.example.firebaseadd.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 

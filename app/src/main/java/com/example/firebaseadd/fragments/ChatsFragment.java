@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Fragments;
+package com.example.firebaseadd.fragments;
 
 import android.os.Bundle;
 
@@ -10,14 +10,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.example.firebaseadd.Adapter.FriendsAdapter;
-import com.example.firebaseadd.Adapter.MessageAdapter;
-import com.example.firebaseadd.Adapter.UserAdapter;
-import com.example.firebaseadd.Model.Chatlist;
-import com.example.firebaseadd.Model.FriendsList;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.adapter.MassageUserAdapter;
+import com.example.firebaseadd.model.ChatList;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,35 +25,33 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
-public class MyFriendsFragment extends Fragment {
+public class ChatsFragment extends Fragment {
 
-    private FriendsAdapter userAdapter;
+    private MassageUserAdapter userAdapter;
     private List<User> mUsers = new ArrayList<>();
 
     private DatabaseReference reference;
 
-    private Map<String, FriendsList> usersList = new HashMap<>();
+    private Map<String, ChatList> usersList = new HashMap<>();
 
     private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_friends,
+        View view = inflater.inflate(R.layout.fragment_chats,
                 container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view3);
+        recyclerView = view.findViewById(R.id.recycler_view2);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new FriendsAdapter(getContext(), mUsers);
+        userAdapter = new MassageUserAdapter(getContext(), mUsers);
 
-        reference = FirebaseDatabase.getInstance().getReference("Friends");
+        reference = FirebaseDatabase.getInstance().getReference("ChatList");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -69,9 +63,9 @@ public class MyFriendsFragment extends Fragment {
                     for (DataSnapshot test : ll) {
                         list.add(test.getKey());
                     }
-                    usersList.put(id, new FriendsList(id, list));
+                    usersList.put(id, new ChatList(id, list));
                 }
-                friendsList();
+                chatList();
             }
 
             @Override
@@ -82,7 +76,7 @@ public class MyFriendsFragment extends Fragment {
         return view;
     }
 
-    private void friendsList() {
+    private void chatList() {
         reference = FirebaseDatabase.getInstance().getReference("MyUsers");
         final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
         reference.addValueEventListener(new ValueEventListener() {
@@ -90,8 +84,8 @@ public class MyFriendsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
                 if (usersList.containsKey(logUser.getUid())) {
-                    FriendsList mt = usersList.get(logUser.getUid());
-                    List io = mt.getValue();
+                    ChatList mt = usersList.get(logUser.getUid());
+                    List<String> io = mt.getValue();
                     for (DataSnapshot it : snapshot.getChildren()) {
                         if (io.contains(it.getKey())) {
                             User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
@@ -107,5 +101,9 @@ public class MyFriendsFragment extends Fragment {
 
             }
         });
+
+
     }
+
+
 }

@@ -1,14 +1,15 @@
-package com.example.firebaseadd.Model;
+package com.example.firebaseadd.model;
 
 public class User {
 
     private String id;
-    private String username;
+    private String userName;
     private String imageUrl;
+
 
     public User(String id, String username, String imageUrl) {
         this.id = id;
-        this.username = username;
+        this.userName = username;
         this.imageUrl = imageUrl;
     }
 
@@ -19,7 +20,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "id='" + id + '\'' +
-                ", username='" + username + '\'' +
+                ", username='" + userName + '\'' +
                 '}';
     }
 
@@ -33,11 +34,11 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.userName = username;
     }
 
     public String getImageUrl() {

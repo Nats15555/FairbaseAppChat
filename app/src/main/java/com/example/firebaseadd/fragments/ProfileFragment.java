@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Fragments;
+package com.example.firebaseadd.fragments;
 
 import android.os.Bundle;
 
@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

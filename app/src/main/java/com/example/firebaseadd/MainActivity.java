@@ -12,22 +12,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.example.firebaseadd.Fragments.BlacklistFragment;
-import com.example.firebaseadd.Fragments.ChatsFragment;
-import com.example.firebaseadd.Fragments.MyFriendsFragment;
-import com.example.firebaseadd.Fragments.ProfileFragment;
-import com.example.firebaseadd.Fragments.UsersFragment;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.fragments.BlacklistFragment;
+import com.example.firebaseadd.fragments.ChatsFragment;
+import com.example.firebaseadd.fragments.MyFriendsFragment;
+import com.example.firebaseadd.fragments.ProfileFragment;
+import com.example.firebaseadd.fragments.UsersFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;

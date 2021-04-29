@@ -1,19 +1,18 @@
-package com.example.firebaseadd.Model;
+package com.example.firebaseadd.model;
 
 import java.util.List;
-import java.util.Map;
 
-public class Chatlist {
+public class ChatList {
 
     private String id;
-    private List value;
+    private List<String> value;
 
-    public Chatlist(String id, List value) {
+    public ChatList(String id, List<String> value) {
         this.id = id;
         this.value = value;
     }
 
-    public Chatlist() {
+    public ChatList() {
     }
 
     public String getId() {

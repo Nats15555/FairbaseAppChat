@@ -1,4 +1,4 @@
-package com.example.firebaseadd.Fragments;
+package com.example.firebaseadd.fragments;
 
 import android.os.Bundle;
 
@@ -11,10 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.firebaseadd.Adapter.MassageUserAdapter;
-import com.example.firebaseadd.Adapter.UserAdapter;
-import com.example.firebaseadd.Model.Chatlist;
-import com.example.firebaseadd.Model.User;
+import com.example.firebaseadd.adapter.IgnoreAdapter;
+import com.example.firebaseadd.model.IgnoreList;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,37 +23,34 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+public class BlacklistFragment extends Fragment {
 
-public class ChatsFragment extends Fragment {
-
-    private MassageUserAdapter userAdapter;
+    private IgnoreAdapter userAdapter;
     private List<User> mUsers = new ArrayList<>();
 
     private DatabaseReference reference;
 
-    private Map<String, Chatlist> usersList = new HashMap<>();
+    private Map<String, IgnoreList> usersList = new HashMap<>();
 
     private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chats,
+        View view = inflater.inflate(R.layout.fragment_blacklist,
                 container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_view2);
+        recyclerView = view.findViewById(R.id.recycler_view4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new MassageUserAdapter(getContext(), mUsers);
+        userAdapter = new IgnoreAdapter(getContext(), mUsers);
 
-        reference = FirebaseDatabase.getInstance().getReference("ChatList");
+        reference = FirebaseDatabase.getInstance().getReference("Ignore");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -66,9 +62,9 @@ public class ChatsFragment extends Fragment {
                     for (DataSnapshot test : ll) {
                         list.add(test.getKey());
                     }
-                    usersList.put(id, new Chatlist(id, list));
+                    usersList.put(id, new IgnoreList(id, list));
                 }
-                chatList();
+                ignoreList();
             }
 
             @Override
@@ -79,7 +75,7 @@ public class ChatsFragment extends Fragment {
         return view;
     }
 
-    private void chatList() {
+    private void ignoreList() {
         reference = FirebaseDatabase.getInstance().getReference("MyUsers");
         final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
         reference.addValueEventListener(new ValueEventListener() {
@@ -87,8 +83,8 @@ public class ChatsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
                 if (usersList.containsKey(logUser.getUid())) {
-                    Chatlist mt = usersList.get(logUser.getUid());
-                    List io = mt.getValue();
+                    IgnoreList mt = usersList.get(logUser.getUid());
+                    List<String> io = mt.getValue();
                     for (DataSnapshot it : snapshot.getChildren()) {
                         if (io.contains(it.getKey())) {
                             User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
@@ -104,9 +100,5 @@ public class ChatsFragment extends Fragment {
 
             }
         });
-
-
     }
-
-
 }

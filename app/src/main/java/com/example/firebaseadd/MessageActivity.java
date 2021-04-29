@@ -18,12 +18,9 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.example.firebaseadd.Adapter.FriendsAdapter;
-import com.example.firebaseadd.Adapter.MessageAdapter;
-import com.example.firebaseadd.Model.Chat;
-import com.example.firebaseadd.Model.IgnoreList;
-import com.example.firebaseadd.Model.User;
-import com.google.android.gms.tasks.Task;
+import com.example.firebaseadd.adapter.MessageAdapter;
+import com.example.firebaseadd.model.Chat;
+import com.example.firebaseadd.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,14 +38,14 @@ public class MessageActivity extends AppCompatActivity {
     
     private RecyclerView recyclerView;
 
-    private FirebaseUser fuser;
+    private FirebaseUser fUser;
     private DatabaseReference reference;
     private Intent intent;
 
     private MessageAdapter messageAdapter;
-    private List<Chat> mchat = new ArrayList<>();
+    private List<Chat> mChat = new ArrayList<>();
     private List<String> listIgn=new ArrayList<>();
-    private String userid;
+    private String userId;
     private boolean chIgn=false;
     private boolean chFri=false;
 
@@ -75,7 +70,7 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         Button addFriend = findViewById(R.id.add_friend);
         Button ignore = findViewById(R.id.ignore);
-        messageAdapter = new MessageAdapter(MessageActivity.this, mchat, null);
+        messageAdapter = new MessageAdapter(MessageActivity.this, mChat, null);
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -86,10 +81,10 @@ public class MessageActivity extends AppCompatActivity {
         });
 
         intent = getIntent();
-        userid = intent.getStringExtra("useriq");
+        userId = intent.getStringExtra("useriq");
 
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("MyUsers").child(userid);
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("MyUsers").child(userId);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,7 +101,7 @@ public class MessageActivity extends AppCompatActivity {
                 }
                 DatabaseReference reference = FirebaseDatabase.getInstance()
                         .getReference("Ignore")
-                        .child(fuser.getUid());
+                        .child(fUser.getUid());
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -114,8 +109,8 @@ public class MessageActivity extends AppCompatActivity {
                         for (DataSnapshot it: snapshot.getChildren()){
                             listIgn.add(it.getKey());
                         }
-                        if(!listIgn.contains(userid)){
-                            readMessages(fuser.getUid(), userid, user.getImageUrl());
+                        if(!listIgn.contains(userId)){
+                            readMessages(fUser.getUid(), userId, user.getImageUrl());
                         }else{
                             Toast.makeText(MessageActivity.this
                                     , "Вы добавили пользователя в черный список", Toast.LENGTH_SHORT).show();
@@ -141,7 +136,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String msg = msg_editTest.getText().toString();
                 if (!msg.equals("")) {
-                    sendMassage(fuser.getUid(), userid, msg);
+                    sendMassage(fUser.getUid(), userId, msg);
                 } else {
                     Toast.makeText(MessageActivity.this
                             , "Please send a non empty msg", Toast.LENGTH_SHORT).show();
@@ -177,12 +172,12 @@ public class MessageActivity extends AppCompatActivity {
         reference.child("Chats").push().setValue(map);
         final DatabaseReference chatRef = FirebaseDatabase.getInstance()
                 .getReference("ChatList")
-                .child(fuser.getUid()).child(userid);
+                .child(fUser.getUid()).child(userId);
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    chatRef.child("id").setValue("" + userid);
+                    chatRef.child("id").setValue("" + userId);
                 }
             }
 
@@ -201,7 +196,7 @@ public class MessageActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mchat.clear();
+                mChat.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
                     Chat chat = it.getValue(Chat.class);
                     Iterable<DataSnapshot> myUser = it.getChildren();
@@ -215,7 +210,7 @@ public class MessageActivity extends AppCompatActivity {
                             break;
                         }
                         chat.setMessage(message);
-                        mchat.add(chat);
+                        mChat.add(chat);
                     }
                 }
                 recyclerView.setAdapter(messageAdapter);//
@@ -231,13 +226,13 @@ public class MessageActivity extends AppCompatActivity {
 
     private void addFriend() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends")
-                .child(fuser.getUid()).child(userid);
+                .child(fUser.getUid()).child(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
                     if(!chFri) {
-                        reference.child("id").setValue("" + userid);
+                        reference.child("id").setValue("" + userId);
                         chFri=true;
                     }
                 }
@@ -252,13 +247,13 @@ public class MessageActivity extends AppCompatActivity {
 
     private void addIgnore() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Ignore")
-                .child(fuser.getUid()).child(userid);
+                .child(fUser.getUid()).child(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
                     if(!chIgn){
-                        reference.child("id").setValue("" + userid);
+                        reference.child("id").setValue("" + userId);
                         chIgn=true;
                     }
                 }
