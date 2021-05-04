@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.firebaseadd.adapter.MessageAdapter;
 import com.example.firebaseadd.model.Chat;
 import com.example.firebaseadd.model.User;
+import com.example.firebaseadd.model.UserChat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +44,7 @@ public class MessageActivity extends AppCompatActivity {
     private Intent intent;
 
     private MessageAdapter messageAdapter;
-    private List<Chat> mChat = new ArrayList<>();
+    private UserChat userChats=new UserChat(new ArrayList<>());
     private List<String> listIgn=new ArrayList<>();
     private String userId;
     private boolean chIgn=false;
@@ -70,7 +71,7 @@ public class MessageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         Button addFriend = findViewById(R.id.add_friend);
         Button ignore = findViewById(R.id.ignore);
-        messageAdapter = new MessageAdapter(MessageActivity.this, mChat, null);
+        messageAdapter = new MessageAdapter(MessageActivity.this, userChats.getChatList(), null);
         Toolbar toolbar = findViewById(R.id.toolbar);
         getSupportActionBar().hide();
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -196,7 +197,7 @@ public class MessageActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mChat.clear();
+                userChats.getChatList().clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
                     Chat chat = it.getValue(Chat.class);
                     Iterable<DataSnapshot> myUser = it.getChildren();
@@ -210,7 +211,7 @@ public class MessageActivity extends AppCompatActivity {
                             break;
                         }
                         chat.setMessage(message);
-                        mChat.add(chat);
+                        userChats.getChatList().add(chat);
                     }
                 }
                 recyclerView.setAdapter(messageAdapter);//
