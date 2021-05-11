@@ -10,34 +10,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.firebaseadd.adapter.MassageUserAdapter;
-import com.example.firebaseadd.model.ChatList;
 import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
+import com.example.firebaseadd.utility.FireBaseConnection;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class ChatsFragment extends Fragment {
 
     private MassageUserAdapter userAdapter;
-    private List<User> mUsers = new ArrayList<>();
-
+    private List<User> chatUsers = new ArrayList<>();
+    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
     private DatabaseReference reference;
-
-    private Map<String, ChatList> usersList = new HashMap<>();
-
+    private List<String> userInChats =new ArrayList<>();
     private RecyclerView recyclerView;
 
     @Override
@@ -49,48 +45,38 @@ public class ChatsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view2);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new MassageUserAdapter(getContext(), mUsers);
-
-        reference = FirebaseDatabase.getInstance().getReference("ChatList");
+        userAdapter = new MassageUserAdapter(getContext(), chatUsers);
+        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = fireBaseConnection.getChatList().child(logUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usersList.clear();
+                userInChats.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
-                    String id = it.getKey();
-                    Iterable<DataSnapshot> ll = it.getChildren();
-                    List<String> list = new ArrayList<>();
-                    for (DataSnapshot test : ll) {
-                        list.add(test.getKey());
-                    }
-                    usersList.put(id, new ChatList(id, list));
+                    userInChats.add(it.getKey());
+
                 }
-                chatList();
+                chatsList();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
         return view;
     }
 
-    private void chatList() {
-        reference = FirebaseDatabase.getInstance().getReference("MyUsers");
-        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
+    private void chatsList() {
+        reference = fireBaseConnection.getMyUsers();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUsers.clear();
-                if (usersList.containsKey(logUser.getUid())) {
-                    ChatList mt = usersList.get(logUser.getUid());
-                    List<String> io = mt.getValue();
-                    for (DataSnapshot it : snapshot.getChildren()) {
-                        if (io.contains(it.getKey())) {
-                            User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
-                            mUsers.add(user);
-                        }
+                chatUsers.clear();
+                for (DataSnapshot it : snapshot.getChildren()) {
+                    if (userInChats.contains(it.getKey())) {
+                        User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
+                        chatUsers.add(user);
                     }
                 }
                 recyclerView.setAdapter(userAdapter);
@@ -98,12 +84,8 @@ public class ChatsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
-
 }

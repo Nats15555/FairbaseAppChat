@@ -12,16 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.firebaseadd.adapter.AllUserAdapter;
 import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
+import com.example.firebaseadd.utility.FireBaseConnection;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class UsersFragment extends Fragment {
     private AllUserAdapter findUserAdapter;
     private Button find;
     private EditText findUser;
+    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,7 +73,7 @@ public class UsersFragment extends Fragment {
 
     private void ReadUsers() {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("MyUsers");
+        DatabaseReference reference = fireBaseConnection.getMyUsers();
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -89,7 +91,7 @@ public class UsersFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }

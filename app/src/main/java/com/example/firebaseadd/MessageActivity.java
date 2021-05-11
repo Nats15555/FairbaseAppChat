@@ -22,12 +22,12 @@ import com.example.firebaseadd.adapter.MessageAdapter;
 import com.example.firebaseadd.model.Chat;
 import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.model.UserChat;
+import com.example.firebaseadd.utility.FireBaseConnection;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -40,11 +40,12 @@ public class MessageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private FirebaseUser fUser;
+    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
     private DatabaseReference reference;
     private Intent intent;
 
     private MessageAdapter messageAdapter;
-    private UserChat userChats=new UserChat(new ArrayList<>());
+    private UserChat userChats;
     private List<String> listIgn=new ArrayList<>();
     private String userId;
     private boolean chIgn=false;
@@ -62,7 +63,8 @@ public class MessageActivity extends AppCompatActivity {
 
         Button send = findViewById(R.id.btn_send);
         EditText msg_editTest = findViewById(R.id.test_send);
-
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
+        userChats=new UserChat(new ArrayList<>(),new User(fUser.getUid(),fUser.getDisplayName(),null));
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -84,8 +86,7 @@ public class MessageActivity extends AppCompatActivity {
         intent = getIntent();
         userId = intent.getStringExtra("useriq");
 
-        fUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("MyUsers").child(userId);
+        reference =fireBaseConnection.getMyUsers().child(userId);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -100,8 +101,7 @@ public class MessageActivity extends AppCompatActivity {
                             .load(user.getImageUrl())
                             .into(imageView);
                 }
-                DatabaseReference reference = FirebaseDatabase.getInstance()
-                        .getReference("Ignore")
+                DatabaseReference reference = fireBaseConnection.getIgnore()
                         .child(fUser.getUid());
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -145,14 +145,12 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-//доделать добавление в друзья
         addFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addFriend();
             }
         });
-//доделать добавление в игнор
         ignore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +161,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void sendMassage(String sender, String receiver, String massage) {
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference reference = fireBaseConnection.getRef();
 
         Map<String, Object> map = new HashMap<>();
         map.put("sender", sender);
@@ -171,8 +169,7 @@ public class MessageActivity extends AppCompatActivity {
         map.put("massage", massage);
 
         reference.child("Chats").push().setValue(map);
-        final DatabaseReference chatRef = FirebaseDatabase.getInstance()
-                .getReference("ChatList")
+        final DatabaseReference chatRef = fireBaseConnection.getChatList()
                 .child(fUser.getUid()).child(userId);
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -193,7 +190,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void readMessages(String myid, String userid, String imageurl) {
 
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference = fireBaseConnection.getChats();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -220,13 +217,13 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MessageActivity.this, "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void addFriend() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends")
+        DatabaseReference reference = fireBaseConnection.getFriends()
                 .child(fUser.getUid()).child(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -241,13 +238,13 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MessageActivity.this, "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void addIgnore() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Ignore")
+        DatabaseReference reference = fireBaseConnection.getIgnore()
                 .child(fUser.getUid()).child(userId);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -262,7 +259,7 @@ public class MessageActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(MessageActivity.this, "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }

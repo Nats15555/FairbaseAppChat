@@ -2,16 +2,16 @@ package com.example.firebaseadd.model;
 
 import java.util.List;
 
-public class UserChat extends User {
+public class UserChat {
     private List<Chat> chatList;
+    private User user;
 
-    public UserChat(String id, String username, String imageUrl, List<Chat> chatList) {
-        super(id, username, imageUrl);
+    public UserChat(List<Chat> chatList, User user) {
         this.chatList = chatList;
+        this.user = user;
     }
 
-    public UserChat(List<Chat> chatList) {
-        this.chatList = chatList;
+    public UserChat() {
     }
 
     public List<Chat> getChatList() {
@@ -20,5 +20,13 @@ public class UserChat extends User {
 
     public void setChatList(List<Chat> chatList) {
         this.chatList = chatList;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

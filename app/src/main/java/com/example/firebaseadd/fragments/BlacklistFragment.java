@@ -10,17 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.firebaseadd.adapter.IgnoreAdapter;
 import com.example.firebaseadd.model.IgnoreList;
 import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
+import com.example.firebaseadd.utility.FireBaseConnection;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -31,12 +32,10 @@ import java.util.Map;
 public class BlacklistFragment extends Fragment {
 
     private IgnoreAdapter userAdapter;
-    private List<User> mUsers = new ArrayList<>();
-
+    private List<User> ignoreUsers = new ArrayList<>();
+    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
     private DatabaseReference reference;
-
-    private Map<String, IgnoreList> usersList = new HashMap<>();
-
+    private List<String> userInIgnore=new ArrayList<>();
     private RecyclerView recyclerView;
 
     @Override
@@ -48,56 +47,46 @@ public class BlacklistFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new IgnoreAdapter(getContext(), mUsers);
-
-        reference = FirebaseDatabase.getInstance().getReference("Ignore");
+        userAdapter = new IgnoreAdapter(getContext(), ignoreUsers);
+        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = fireBaseConnection.getIgnore().child(logUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usersList.clear();
+                userInIgnore.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
-                    String id = it.getKey();
-                    Iterable<DataSnapshot> ll = it.getChildren();
-                    List<String> list = new ArrayList<>();
-                    for (DataSnapshot test : ll) {
-                        list.add(test.getKey());
-                    }
-                    usersList.put(id, new IgnoreList(id, list));
+                    userInIgnore.add(it.getKey());
+
                 }
                 ignoreList();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
         return view;
     }
 
     private void ignoreList() {
-        reference = FirebaseDatabase.getInstance().getReference("MyUsers");
-        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = fireBaseConnection.getMyUsers();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUsers.clear();
-                if (usersList.containsKey(logUser.getUid())) {
-                    IgnoreList mt = usersList.get(logUser.getUid());
-                    List<String> io = mt.getValue();
+                ignoreUsers.clear();
                     for (DataSnapshot it : snapshot.getChildren()) {
-                        if (io.contains(it.getKey())) {
+                        if (userInIgnore.contains(it.getKey())) {
                             User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
-                            mUsers.add(user);
+                            ignoreUsers.add(user);
                         }
                     }
-                }
                 recyclerView.setAdapter(userAdapter);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
             }
         });
     }

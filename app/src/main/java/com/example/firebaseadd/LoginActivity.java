@@ -38,10 +38,9 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-
         EditText email = findViewById(R.id.email_login);
         EditText password = findViewById(R.id.pass_login);
-        Button btn_login = findViewById(R.id.btn_login);
+        Button btnLogin = findViewById(R.id.btn_login);
         Button inRegister = findViewById(R.id.inRegister);
 
         inRegister.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String txt_email = email.getText().toString();
@@ -66,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK); //воотановить чтотакое флаг активити
                                         startActivity(intent);
                                         finish();
                                     } else {
