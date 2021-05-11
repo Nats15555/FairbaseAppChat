@@ -1,5 +1,11 @@
 package com.example.firebaseadd.model;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.Objects;
+
 public class User {
 
     private String id;
@@ -22,6 +28,21 @@ public class User {
                 "id='" + id + '\'' +
                 ", username='" + userName + '\'' +
                 '}';
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userName, imageUrl);
     }
 
     public String getId() {
