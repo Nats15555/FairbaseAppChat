@@ -32,7 +32,6 @@ public class ChatsFragment extends Fragment {
     private MassageUserAdapter userAdapter;
     private List<User> chatUsers = new ArrayList<>();
     private FireBaseConnection fireBaseConnection=new FireBaseConnection();
-    private DatabaseReference reference;
     private List<String> userInChats =new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -46,9 +45,7 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         userAdapter = new MassageUserAdapter(getContext(), chatUsers);
-        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = fireBaseConnection.getChatList().child(logUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getChatList().child(fireBaseConnection.getLoginUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userInChats.clear();
@@ -68,8 +65,7 @@ public class ChatsFragment extends Fragment {
     }
 
     private void chatsList() {
-        reference = fireBaseConnection.getMyUsers();
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatUsers.clear();

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.firebaseadd.utility.FireBaseConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -19,12 +20,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
+
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (userFirebase != null) {
+        if (fireBaseConnection.getLoginUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -35,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
 
         EditText email = findViewById(R.id.email_login);
         EditText password = findViewById(R.id.pass_login);
@@ -53,13 +53,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String txt_email = email.getText().toString();
-                String txt_password = password.getText().toString();
+                String txtEmail = email.getText().toString();
+                String txtPassword = password.getText().toString();
 
-                if (TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)) {
+                if (TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword)) {
                     Toast.makeText(LoginActivity.this, "All fileds are required", Toast.LENGTH_SHORT).show();
                 } else {
-                    auth.signInWithEmailAndPassword(txt_email, txt_password)
+                    fireBaseConnection.getAuth().signInWithEmailAndPassword(txtEmail, txtPassword)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {

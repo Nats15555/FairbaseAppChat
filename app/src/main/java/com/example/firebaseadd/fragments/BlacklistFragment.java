@@ -34,7 +34,6 @@ public class BlacklistFragment extends Fragment {
     private IgnoreAdapter userAdapter;
     private List<User> ignoreUsers = new ArrayList<>();
     private FireBaseConnection fireBaseConnection=new FireBaseConnection();
-    private DatabaseReference reference;
     private List<String> userInIgnore=new ArrayList<>();
     private RecyclerView recyclerView;
 
@@ -48,9 +47,7 @@ public class BlacklistFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         userAdapter = new IgnoreAdapter(getContext(), ignoreUsers);
-        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = fireBaseConnection.getIgnore().child(logUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getIgnore().child(fireBaseConnection.getLoginUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userInIgnore.clear();
@@ -70,8 +67,7 @@ public class BlacklistFragment extends Fragment {
     }
 
     private void ignoreList() {
-        reference = fireBaseConnection.getMyUsers();
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ignoreUsers.clear();

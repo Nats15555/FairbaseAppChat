@@ -36,20 +36,19 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageActivity extends AppCompatActivity {
-    
+
     private RecyclerView recyclerView;
 
-    private FirebaseUser fUser;
-    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
-    private DatabaseReference reference;
+    private FirebaseUser loginUser;
+    private FireBaseConnection fireBaseConnection = new FireBaseConnection();
     private Intent intent;
 
     private MessageAdapter messageAdapter;
     private UserChat userChats;
-    private List<String> listIgn=new ArrayList<>();
+    private List<String> listIgn = new ArrayList<>();
     private String userId;
-    private boolean chIgn=false;
-    private boolean chFri=false;
+    private boolean chIgn = false;
+    private boolean chFri = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -59,12 +58,12 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
 
         ImageView imageView = findViewById(R.id.imageview_profile);
-        TextView username = findViewById(R.id.username);
+        TextView userName = findViewById(R.id.username);
 
         Button send = findViewById(R.id.btn_send);
-        EditText msg_editTest = findViewById(R.id.test_send);
-        fUser = FirebaseAuth.getInstance().getCurrentUser();
-        userChats=new UserChat(new ArrayList<>(),new User(fUser.getUid(),fUser.getDisplayName(),null));
+        EditText msgEditTest = findViewById(R.id.test_send);
+        loginUser = fireBaseConnection.getLoginUser();
+        userChats = new UserChat(new ArrayList<>(), new User(loginUser.getUid(), loginUser.getDisplayName(), null));
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -86,13 +85,11 @@ public class MessageActivity extends AppCompatActivity {
         intent = getIntent();
         userId = intent.getStringExtra("useriq");
 
-        reference =fireBaseConnection.getMyUsers().child(userId);
-
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getMyUsers().child(userId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                username.setText(user.getUsername());
+                userName.setText(user.getUsername());
 
                 if (user.getImageUrl() == null) {
                     imageView.setImageResource(R.mipmap.ic_launcher);
@@ -101,18 +98,18 @@ public class MessageActivity extends AppCompatActivity {
                             .load(user.getImageUrl())
                             .into(imageView);
                 }
-                DatabaseReference reference = fireBaseConnection.getIgnore()
-                        .child(fUser.getUid());
-                reference.addValueEventListener(new ValueEventListener() {
+
+                fireBaseConnection.getIgnore()
+                        .child(loginUser.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         listIgn.clear();
-                        for (DataSnapshot it: snapshot.getChildren()){
+                        for (DataSnapshot it : snapshot.getChildren()) {
                             listIgn.add(it.getKey());
                         }
-                        if(!listIgn.contains(userId)){
-                            readMessages(fUser.getUid(), userId, user.getImageUrl());
-                        }else{
+                        if (!listIgn.contains(userId)) {
+                            readMessages(loginUser.getUid(), userId, user.getImageUrl());
+                        } else {
                             Toast.makeText(MessageActivity.this
                                     , "Вы добавили пользователя в черный список", Toast.LENGTH_SHORT).show();
                         }
@@ -135,9 +132,9 @@ public class MessageActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = msg_editTest.getText().toString();
+                String msg = msgEditTest.getText().toString();
                 if (!msg.equals("")) {
-                    sendMassage(fUser.getUid(), userId, msg);
+                    sendMassage(loginUser.getUid(), userId, msg);
                 } else {
                     Toast.makeText(MessageActivity.this
                             , "Please send a non empty msg", Toast.LENGTH_SHORT).show();
@@ -161,16 +158,14 @@ public class MessageActivity extends AppCompatActivity {
 
     private void sendMassage(String sender, String receiver, String massage) {
 
-        DatabaseReference reference = fireBaseConnection.getRef();
-
         Map<String, Object> map = new HashMap<>();
         map.put("sender", sender);
         map.put("receiver", receiver);
         map.put("massage", massage);
 
-        reference.child("Chats").push().setValue(map);
-        final DatabaseReference chatRef = fireBaseConnection.getChatList()
-                .child(fUser.getUid()).child(userId);
+        fireBaseConnection.getRef().child("Chats").push().setValue(map);
+        DatabaseReference chatRef = fireBaseConnection.getChatList()
+                .child(loginUser.getUid()).child(userId);
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -189,9 +184,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void readMessages(String myid, String userid, String imageurl) {
-
-        reference = fireBaseConnection.getChats();
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getChats().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userChats.getChatList().clear();
@@ -223,15 +216,15 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void addFriend() {
-        DatabaseReference reference = fireBaseConnection.getFriends()
-                .child(fUser.getUid()).child(userId);
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference refFriends = fireBaseConnection.getFriends()
+                .child(loginUser.getUid()).child(userId);
+        refFriends.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    if(!chFri) {
-                        reference.child("id").setValue("" + userId);
-                        chFri=true;
+                    if (!chFri) {
+                        refFriends.child("id").setValue("" + userId);
+                        chFri = true;
                     }
                 }
             }
@@ -244,15 +237,15 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void addIgnore() {
-        DatabaseReference reference = fireBaseConnection.getIgnore()
-                .child(fUser.getUid()).child(userId);
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference refIgnore = fireBaseConnection.getIgnore()
+                .child(loginUser.getUid()).child(userId);
+        refIgnore.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    if(!chIgn){
-                        reference.child("id").setValue("" + userId);
-                        chIgn=true;
+                    if (!chIgn) {
+                        refIgnore.child("id").setValue("" + userId);
+                        chIgn = true;
                     }
                 }
             }

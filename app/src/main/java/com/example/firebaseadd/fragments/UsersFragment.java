@@ -36,8 +36,6 @@ public class UsersFragment extends Fragment {
     private List<User> sortUser = new ArrayList<>();
     private AllUserAdapter userAdapter;
     private AllUserAdapter findUserAdapter;
-    private Button find;
-    private EditText findUser;
     private FireBaseConnection fireBaseConnection=new FireBaseConnection();
 
     @Override
@@ -46,8 +44,8 @@ public class UsersFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        find=view.findViewById(R.id.find);
-        findUser=view.findViewById(R.id.find_user);
+        Button findBox=view.findViewById(R.id.find);
+        EditText findUser=view.findViewById(R.id.find_user);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -56,7 +54,7 @@ public class UsersFragment extends Fragment {
         userAdapter = new AllUserAdapter(getContext(), mUsers);
         findUserAdapter = new AllUserAdapter(getContext(),sortUser);
         ReadUsers();
-        find.setOnClickListener(new View.OnClickListener() {
+        findBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String findU=findUser.getText().toString();
@@ -72,17 +70,14 @@ public class UsersFragment extends Fragment {
     }
 
     private void ReadUsers() {
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = fireBaseConnection.getMyUsers();
-
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
                     User user = it.getValue(User.class);
                     assert user != null;
-                    if (!user.getId().equals(firebaseUser.getUid())) {
+                    if (!user.getId().equals(fireBaseConnection.getLoginUser().getUid())) {
                         mUsers.add(user);
                     }
                     recyclerView.setAdapter(userAdapter);

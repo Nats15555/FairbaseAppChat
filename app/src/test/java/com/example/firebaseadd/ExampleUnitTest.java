@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     private DatabaseReference reference;
 
-
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
@@ -43,14 +42,14 @@ public class ExampleUnitTest {
                     userInFriends.add(it.getKey());
 
                 }
-                reference = fireBaseConnection.getMyUsers();
+                reference = fireBaseConnection.getMyUsers(); //Observer - observable (try to move addValueEventListener to FireBaseConnection) friendUsers -> observer
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         friendUsers.clear();
                         for (DataSnapshot it : snapshot.getChildren()) {
                             if (userInFriends.contains(it.getKey())) {
-                                User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
+                                User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null); //parsing -> public method parse snapshot -> FireBaseConnection -> test(!)
                                 friendUsers.add(user);
                             }
                         }

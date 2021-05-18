@@ -25,8 +25,6 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private FirebaseAuth auth;
-    private DatabaseReference reference;
     private final FireBaseConnection fireBaseConnection=new FireBaseConnection();
 
     @Override
@@ -39,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
         EditText emailET = findViewById(R.id.emailEditText);
         Button registerBtn = findViewById(R.id.buttonRegister);
         Button inLogin = findViewById(R.id.inLogin);
-        auth = FirebaseAuth.getInstance();
 
         inLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,55 +48,53 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String txtUsername = userET.getText().toString();
+                String txtUserName = userET.getText().toString();
                 String txtEmail = emailET.getText().toString();
                 String txtPassword = passET.getText().toString();
 
-                if (TextUtils.isEmpty(txtUsername) || TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword)) {
+                if (TextUtils.isEmpty(txtUserName) || TextUtils.isEmpty(txtEmail) || TextUtils.isEmpty(txtPassword)) {
                     Toast.makeText(RegisterActivity.this, "All fileds are required", Toast.LENGTH_SHORT).show();
                 } else if (txtPassword.length() < 6) {
                     Toast.makeText(RegisterActivity.this, "Password must be at the 6 characters", Toast.LENGTH_SHORT).show();
                 } else {
-                    register(txtUsername, txtEmail, txtPassword);
+                    register(txtUserName, txtEmail, txtPassword);
                 }
 
             }
         });
     }
 
-    private void register(String username, String email, String password) {
+    private void register(String userName, String email, String password) {
 
-        auth.createUserWithEmailAndPassword(email, password)
+        fireBaseConnection.getAuth().createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                            assert firebaseUser != null;
-                            String userid = firebaseUser.getUid();
+                            FirebaseUser firebaseUser = fireBaseConnection.getLoginUser();
+                            String userId="";
+                            if(firebaseUser != null){
+                                userId = firebaseUser.getUid();
 
-                            reference = fireBaseConnection.getMyUsers().child(userid);
+                                Map<String, String> hashMap = new HashMap<>();
+                                hashMap.put("id", userId);
+                                hashMap.put("username", userName);
+                                hashMap.put("imageURL", "default");
 
-                            Map<String, String> hashMap = new HashMap<>();
-                            hashMap.put("id", userid);
-                            hashMap.put("username", username);
-                            hashMap.put("imageURL", "default");
-
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);//востановить знание
-                                        startActivity(intent);
-                                        finish();
-                                    }else {
-                                        Toast.makeText(RegisterActivity.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+                                fireBaseConnection.getMyUsers().child(userId).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);//востановить знание
+                                            startActivity(intent);
+                                            finish();
+                                        }else {
+                                            Toast.makeText(RegisterActivity.this, "Check your internet connection", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
+                                });
+                            }
                         }
                     }
                 });

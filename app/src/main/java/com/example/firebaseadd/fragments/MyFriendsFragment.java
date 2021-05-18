@@ -33,7 +33,6 @@ public class MyFriendsFragment extends Fragment {
 
     private FriendsAdapter userAdapter;
     private List<User> friendUsers = new ArrayList<>();
-    private DatabaseReference reference;
     private FireBaseConnection fireBaseConnection=new FireBaseConnection();
     private List<String> userInFriends=new ArrayList<>();
     private RecyclerView recyclerView;
@@ -48,9 +47,7 @@ public class MyFriendsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         userAdapter = new FriendsAdapter(getContext(), friendUsers);
-        final FirebaseUser logUser = FirebaseAuth.getInstance().getCurrentUser();
-        reference = fireBaseConnection.getFriends().child(logUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getFriends().child(fireBaseConnection.getLoginUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userInFriends.clear();
@@ -70,8 +67,7 @@ public class MyFriendsFragment extends Fragment {
     }
 
     private void FriendList() {
-        reference = fireBaseConnection.getMyUsers();
-        reference.addValueEventListener(new ValueEventListener() {
+        fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 friendUsers.clear();

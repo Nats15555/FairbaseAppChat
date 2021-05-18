@@ -22,11 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 
-public class ProfileFragment extends Fragment {
-
-    private TextView userName;
-    private TextView userId;
-    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
+public class ProfileFragment extends Fragment { ;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,11 +31,11 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        userName = view.findViewById(R.id.username_prof);
-        userId = view.findViewById(R.id.id_prof);
+        TextView userName = view.findViewById(R.id.username_prof);
+        TextView userId = view.findViewById(R.id.id_prof);
+        FireBaseConnection fireBaseConnection=new FireBaseConnection();
 
-        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = fireBaseConnection.getMyUsers().child(fuser.getUid());
+        DatabaseReference reference = fireBaseConnection.getMyUsers().child( fireBaseConnection.getLoginUser().getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
