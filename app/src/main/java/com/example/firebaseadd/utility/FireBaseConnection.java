@@ -1,11 +1,13 @@
 package com.example.firebaseadd.utility;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.firebaseadd.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class FireBaseConnection {
     public final String MY_USERS = "MyUsers";
@@ -45,8 +47,20 @@ public class FireBaseConnection {
     public FirebaseUser getLoginUser() {
         return getAuth().getCurrentUser();
     }
+
     public FirebaseAuth getAuth(){
       return FirebaseAuth.getInstance();
     };
+
+    public List<User> getAllUsers(List<User> listUser,List<String> listFind, DataSnapshot snapshot){
+        for (DataSnapshot it : snapshot.getChildren()) {
+            if (listFind.contains(it.getKey())) {
+                User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
+                listUser.add(user);
+            }
+        }
+        return listUser;
+    }
+
 
 }

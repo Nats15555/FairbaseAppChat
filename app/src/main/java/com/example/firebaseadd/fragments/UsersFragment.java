@@ -1,8 +1,10 @@
 package com.example.firebaseadd.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +38,7 @@ public class UsersFragment extends Fragment {
     private List<User> sortUser = new ArrayList<>();
     private AllUserAdapter userAdapter;
     private AllUserAdapter findUserAdapter;
-    private FireBaseConnection fireBaseConnection=new FireBaseConnection();
+    private FireBaseConnection fireBaseConnection = new FireBaseConnection();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,23 +46,23 @@ public class UsersFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_users, container, false);
 
-        Button findBox=view.findViewById(R.id.find);
-        EditText findUser=view.findViewById(R.id.find_user);
+        Button findBox = view.findViewById(R.id.find);
+        EditText findUser = view.findViewById(R.id.find_user);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         userAdapter = new AllUserAdapter(getContext(), mUsers);
-        findUserAdapter = new AllUserAdapter(getContext(),sortUser);
+        findUserAdapter = new AllUserAdapter(getContext(), sortUser);
         ReadUsers();
         findBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String findU=findUser.getText().toString();
-                if(findU.equals("")){
+                String findU = findUser.getText().toString();
+                if (findU.equals("")) {
                     ReadUsers();
-                }else {
+                } else {
                     FindUser(findU);
                 }
             }
@@ -71,17 +73,17 @@ public class UsersFragment extends Fragment {
 
     private void ReadUsers() {
         fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
-                    User user = it.getValue(User.class);
-                    assert user != null;
-                    if (!user.getId().equals(fireBaseConnection.getLoginUser().getUid())) {
+                    User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
+                    if(!user.equals(new User(fireBaseConnection.getLoginUser().getUid(),null,null))){
                         mUsers.add(user);
                     }
-                    recyclerView.setAdapter(userAdapter);
                 }
+                recyclerView.setAdapter(userAdapter);
             }
 
             @Override
@@ -91,10 +93,10 @@ public class UsersFragment extends Fragment {
         });
     }
 
-    private void FindUser(String findU){
+    private void FindUser(String findU) {
         sortUser.clear();
-        for(User it:mUsers){
-            if(it.getUsername().contains(findU)){
+        for (User it : mUsers) {
+            if (it.getUsername().contains(findU)) {
                 sortUser.add(it);
             }
         }

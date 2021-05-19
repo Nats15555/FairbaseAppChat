@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseAdd"
         android:screenOrientation="portrait">
-        <activity android:name=".MessageActivity"></activity>
+        <activity android:name=".MessageActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".LoginActivity">

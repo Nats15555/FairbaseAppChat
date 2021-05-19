@@ -71,12 +71,7 @@ public class MyFriendsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 friendUsers.clear();
-                for (DataSnapshot it : snapshot.getChildren()) {
-                    if (userInFriends.contains(it.getKey())) {
-                        User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
-                        friendUsers.add(user);
-                    }
-                }
+                friendUsers=fireBaseConnection.getAllUsers(friendUsers,userInFriends, snapshot);
                 recyclerView.setAdapter(userAdapter);
             }
 

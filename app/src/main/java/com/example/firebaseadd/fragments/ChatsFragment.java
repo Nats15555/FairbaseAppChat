@@ -69,12 +69,7 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatUsers.clear();
-                for (DataSnapshot it : snapshot.getChildren()) {
-                    if (userInChats.contains(it.getKey())) {
-                        User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
-                        chatUsers.add(user);
-                    }
-                }
+                chatUsers=fireBaseConnection.getAllUsers(chatUsers,userInChats, snapshot);
                 recyclerView.setAdapter(userAdapter);
             }
 

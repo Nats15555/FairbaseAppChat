@@ -71,12 +71,7 @@ public class BlacklistFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ignoreUsers.clear();
-                    for (DataSnapshot it : snapshot.getChildren()) {
-                        if (userInIgnore.contains(it.getKey())) {
-                            User user = new User(it.getKey(), it.getValue(User.class).getUsername(), null);
-                            ignoreUsers.add(user);
-                        }
-                    }
+                ignoreUsers=fireBaseConnection.getAllUsers(ignoreUsers,userInIgnore, snapshot);
                 recyclerView.setAdapter(userAdapter);
             }
 

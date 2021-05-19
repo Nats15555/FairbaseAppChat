@@ -35,22 +35,8 @@ public class ProfileFragment extends Fragment { ;
         TextView userId = view.findViewById(R.id.id_prof);
         FireBaseConnection fireBaseConnection=new FireBaseConnection();
 
-        DatabaseReference reference = fireBaseConnection.getMyUsers().child( fireBaseConnection.getLoginUser().getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                userName.setText("UserName:"+user.getUsername());
-                userId.setText("UserId:"+user.getId());
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        userName.setText(fireBaseConnection.getLoginUser().getEmail());
+        userId.setText(fireBaseConnection.getLoginUser().getUid());
 
         return view;
     }
