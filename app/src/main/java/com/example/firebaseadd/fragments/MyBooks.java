@@ -12,31 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.firebaseadd.adapter.IgnoreAdapter;
-import com.example.firebaseadd.model.IgnoreList;
-import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
+import com.example.firebaseadd.adapter.BookAdapter;
+import com.example.firebaseadd.adapter.IgnoreAdapter;
+import com.example.firebaseadd.model.Book;
+import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.utility.FireBaseConnection;
-import com.example.firebaseadd.utility.Observed;
-import com.example.firebaseadd.utility.Observer;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlacklistFragment extends Fragment {
+public class MyBooks extends Fragment {
 
-    private IgnoreAdapter userAdapter;
-    private List<User> ignoreUsers = new ArrayList<>();
+    private BookAdapter userAdapter;
+    private List<Book> bookList = new ArrayList<>();
     private FireBaseConnection fireBaseConnection=new FireBaseConnection();
-    private List<String> userInIgnore=new ArrayList<>();
     private RecyclerView recyclerView;
 
     @Override
@@ -48,16 +44,19 @@ public class BlacklistFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view4);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        userAdapter = new IgnoreAdapter(getContext(), ignoreUsers);
-        fireBaseConnection.getIgnore().child(fireBaseConnection.getLoginUser().getUid()).addValueEventListener(new ValueEventListener() {
+        userAdapter = new BookAdapter(getContext(), bookList);
+        fireBaseConnection.getBook().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userInIgnore.clear();
+                bookList.clear();
                 for (DataSnapshot it : snapshot.getChildren()) {
-                    userInIgnore.add(it.getKey());
-
+                    String nameBook = it.getValue().toString().trim().split("=")[0].replaceFirst("\\{","");
+                    Map text= (HashMap) it.getValue();
+                    //it.getKey(), nameBook, text.get(nameBook).toString()
+                    bookList.add(new Book(it.getKey(),nameBook,""));
+                    System.out.println(text.get(nameBook).toString().length());
                 }
-                ignoreList();
+                recyclerView.setAdapter(userAdapter);
             }
 
             @Override
@@ -67,20 +66,5 @@ public class BlacklistFragment extends Fragment {
         });
         return view;
     }
-
-    private void ignoreList() {
-        fireBaseConnection.getMyUsers().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ignoreUsers.clear();
-                ignoreUsers=fireBaseConnection.getAllUsers(ignoreUsers,userInIgnore, snapshot);
-                recyclerView.setAdapter(userAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+    
 }

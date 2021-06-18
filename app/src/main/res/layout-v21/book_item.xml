@@ -20,9 +20,9 @@
         android:id="@+id/book_image"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/ic_launcher" />
@@ -31,10 +31,22 @@
         android:id="@+id/dell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginLeft="164dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginLeft="208dp"
         android:text="Delit"
         app:backgroundTint="@color/design_default_color_error"
         app:layout_constraintStart_toEndOf="@+id/book_image"
         tools:layout_editor_absoluteY="40dp" />
+
+    <TextView
+        android:id="@+id/author_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book_image"
+        app:layout_constraintTop_toBottomOf="@+id/book_card"
+        app:layout_constraintVertical_bias="0.384" />
 </androidx.constraintlayout.widget.ConstraintLayout>

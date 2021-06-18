@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.firebaseadd.MessageActivity;
-import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.R;
+import com.example.firebaseadd.model.User;
 
 import java.util.List;
 
@@ -76,8 +76,8 @@ public class AllUserAdapter extends RecyclerView.Adapter<AllUserAdapter.ViewHold
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            username = itemView.findViewById(R.id.user_card);
-            imageView = itemView.findViewById(R.id.user_image);
+            username = itemView.findViewById(R.id.book_card);
+            imageView = itemView.findViewById(R.id.book_image);
         }
     }
 

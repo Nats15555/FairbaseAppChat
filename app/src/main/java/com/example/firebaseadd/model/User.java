@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi;
 
 import java.util.Objects;
 
-public class User {
+public class User{
 
     private String id;
     private String userName;

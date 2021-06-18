@@ -23,7 +23,6 @@ import com.example.firebaseadd.model.Chat;
 import com.example.firebaseadd.model.User;
 import com.example.firebaseadd.model.UserChat;
 import com.example.firebaseadd.utility.FireBaseConnection;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,7 +57,7 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
 
         ImageView imageView = findViewById(R.id.imageview_profile);
-        TextView userName = findViewById(R.id.username);
+        TextView userName = findViewById(R.id.nameBook);
 
         Button send = findViewById(R.id.btn_send);
         EditText msgEditTest = findViewById(R.id.test_send);

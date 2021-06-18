@@ -7,9 +7,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FirebaseAdd"
-        android:screenOrientation="portrait">
+        android:theme="@style/Theme.FirebaseAdd">
+        <activity android:name=".BookActivity"></activity>
         <activity android:name=".MessageActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
