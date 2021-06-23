@@ -9,14 +9,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.firebaseadd.BookActivity;
+import com.example.firebaseadd.MessageActivity;
 import com.example.firebaseadd.R;
 import com.example.firebaseadd.model.Book;
+import com.example.firebaseadd.utility.FireBaseConnection;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -24,6 +34,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private Context context;
     private List<Book> bookList;
+    private FireBaseConnection fireBaseConnection = new FireBaseConnection();
 
     public BookAdapter(Context context, List<Book> bookList) {
         this.context = context;
@@ -51,7 +62,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(context, BookActivity.class);
-                i.putExtra("useriq", book.getAuthor());
+                i.putExtra("useriq", book.getName());//передавать данные между активностями
                 context.startActivity(i);
             }
         });
@@ -66,7 +77,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         public TextView nameBook;
         public TextView authorBook;
         public ImageView imageView;
-        public Button dell;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,7 +84,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             nameBook = itemView.findViewById(R.id.book_card);
             authorBook = itemView.findViewById(R.id.author_card);
             imageView = itemView.findViewById(R.id.book_image);
-            dell = itemView.findViewById(R.id.dell);
         }
     }
+
+    private void addBook() {
+
+    }
+
 }

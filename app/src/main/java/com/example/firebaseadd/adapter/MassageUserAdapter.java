@@ -88,7 +88,7 @@ public class MassageUserAdapter extends RecyclerView.Adapter<MassageUserAdapter.
 
             username = itemView.findViewById(R.id.book_card);
             imageView = itemView.findViewById(R.id.book_image);
-            dell = itemView.findViewById(R.id.dell);
+            dell = itemView.findViewById(R.id.add);
         }
     }
 

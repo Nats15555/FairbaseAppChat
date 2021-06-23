@@ -46,8 +46,6 @@ public class MessageActivity extends AppCompatActivity {
     private UserChat userChats;
     private List<String> listIgn = new ArrayList<>();
     private String userId;
-    private boolean chIgn = false;
-    private boolean chFri = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -217,42 +215,11 @@ public class MessageActivity extends AppCompatActivity {
     private void addFriend() {
         DatabaseReference refFriends = fireBaseConnection.getFriends()
                 .child(loginUser.getUid()).child(userId);
-        refFriends.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    if (!chFri) {
-                        refFriends.child("id").setValue("" + userId);
-                        chFri = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MessageActivity.this, "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        refFriends.child("id").setValue("" + userId);
     }
 
     private void addIgnore() {
-        DatabaseReference refIgnore = fireBaseConnection.getIgnore()
-                .child(loginUser.getUid()).child(userId);
-        refIgnore.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    if (!chIgn) {
-                        refIgnore.child("id").setValue("" + userId);
-                        chIgn = true;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MessageActivity.this, "The read failed: " + error.getCode(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        DatabaseReference refIgnore = fireBaseConnection.getIgnore().child(loginUser.getUid()).child(userId);
+        refIgnore.child("id").setValue("" + userId);
     }
 }

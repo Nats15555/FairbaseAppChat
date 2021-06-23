@@ -15,7 +15,7 @@ import android.view.MenuItem;
 
 import com.example.firebaseadd.fragments.BlacklistFragment;
 import com.example.firebaseadd.fragments.ChatsFragment;
-import com.example.firebaseadd.fragments.MyBooks;
+import com.example.firebaseadd.fragments.AllBooks;
 import com.example.firebaseadd.fragments.MyFriendsFragment;
 import com.example.firebaseadd.fragments.ProfileFragment;
 import com.example.firebaseadd.fragments.UsersFragment;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(new UsersFragment(), "All Users");
         viewPagerAdapter.addFragment(new MyFriendsFragment(), "My Friends");
         viewPagerAdapter.addFragment(new BlacklistFragment(), "Black list");
-        viewPagerAdapter.addFragment(new MyBooks(), "AllBooks");
+        viewPagerAdapter.addFragment(new AllBooks(), "AllBooks");
         viewPagerAdapter.addFragment(new ProfileFragment(), "MyProfile");
 
 

@@ -22,6 +22,7 @@ public class FireBaseConnection{
     public final String IGNORE = "Ignore";
     public final String CHATS = "Chats";
     public final String BOOK = "Book";
+    public final String VOCABULARY="Vocabulary";
 
     private DatabaseReference getTableReference(String myUsers) {
         return FirebaseDatabase.getInstance().getReference(myUsers);
@@ -37,6 +38,10 @@ public class FireBaseConnection{
 
     public DatabaseReference getFriends() {
         return getTableReference(FRIENDS);
+    }
+
+    public DatabaseReference getVocabulary() {
+        return getTableReference(VOCABULARY);
     }
 
     public DatabaseReference getIgnore() {

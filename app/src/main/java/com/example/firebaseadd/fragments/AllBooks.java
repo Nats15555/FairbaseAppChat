@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.firebaseadd.R;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBooks extends Fragment {
+public class AllBooks extends Fragment {
 
     private BookAdapter userAdapter;
     private List<Book> bookList = new ArrayList<>();
